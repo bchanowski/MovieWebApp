@@ -1,7 +1,9 @@
 import "../styles/MovieCard.css";
+import { useMovieContext } from "../contexts/useMovieContext";
 
 type Props = {
   movie: {
+    id: number;
     poster_path: string;
     title: string;
     release_date: string;
@@ -9,8 +11,13 @@ type Props = {
 };
 
 const MovieCard = ({ movie }: Props) => {
-  const onLike = () => {
-    return 1;
+  const { isFavorite, addToFavorites, removeFromFavorites } = useMovieContext();
+  const favorite = isFavorite(movie.id);
+
+  const onLike = (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    if (favorite) removeFromFavorites(movie.id);
+    else addToFavorites(movie);
   };
 
   return (
@@ -21,8 +28,11 @@ const MovieCard = ({ movie }: Props) => {
           alt={movie.title}
         />
         <div className="movie-overlay">
-          <button className="favorite-btn" onClick={onLike}>
-            ❤️
+          <button
+            className={`favorite-btn ${favorite ? "active" : ""}`}
+            onClick={onLike}
+          >
+            ♥
           </button>
         </div>
       </div>
